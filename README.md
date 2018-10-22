@@ -1,2 +1,2 @@
 # heartsweeper
-Scripts of my version of the classic minesweepe
+Scripts of my version of the classic minesweeper
