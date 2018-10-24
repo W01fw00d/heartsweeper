@@ -48,6 +48,7 @@ public class Cell : MonoBehaviour {
 
                 LoadTexture(GridHelper.CountAdjacentMines(x, y));
                 // TODO: descubrir toda el área sin minas alrededor
+                GridHelper.FloodFillUncover(x, y, new bool[GridHelper.w, GridHelper.h]);
                 // TODO: comprobar si el juego ha terminado
             }
         }

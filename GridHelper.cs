@@ -66,4 +66,47 @@ public class GridHelper : MonoBehaviour {
             return false;
         }
     }
+
+    public static void FloodFillUncover(int x, int y, bool [,] visited)
+    {
+        if (IsCellInBoard(x, y))
+        {
+            if (visited[x, y])
+            {
+                return;
+            }
+
+            int adjacentMines = CountAdjacentMines(x, y);
+
+            cells[x, y].LoadTexture(adjacentMines);
+
+            if (adjacentMines > 0)
+            {
+                return;
+            }
+
+            visited[x, y] = true;
+
+            PropagateFloodFillUncover8Directions(x, y, visited);
+        }
+    }
+
+    private static bool IsCellInBoard(int x, int y)
+    {
+        return x >= 0 && y >= 0 && x < w && y < h;
+    }
+
+    private static void PropagateFloodFillUncover4Directions(int x, int y, bool [,] visited)
+    {
+        /*          [Ignored]               */ FloodFillUncover(x, y + 1, visited); /*          [Ignored]             */
+        FloodFillUncover(x - 1, y, visited); /*          [My Cell]                 */ FloodFillUncover(x + 1, y, visited);
+        /*          [Ignored]               */ FloodFillUncover(x, y - 1, visited); /*          [Ignored]             */
+    }
+
+    private static void PropagateFloodFillUncover8Directions(int x, int y, bool[,] visited)
+    {
+        FloodFillUncover(x - 1, y + 1, visited); FloodFillUncover(x, y + 1, visited); FloodFillUncover(x + 1, y + 1, visited);
+        FloodFillUncover(x - 1, y    , visited); /*           [My Cell]           */  FloodFillUncover(x + 1, y    , visited);
+        FloodFillUncover(x - 1, y - 1, visited); FloodFillUncover(x, y - 1, visited); FloodFillUncover(x + 1, y - 1, visited);
+    }
 }
