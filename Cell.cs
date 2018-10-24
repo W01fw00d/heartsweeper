@@ -5,7 +5,7 @@ using UnityEngine;
 public class Cell : MonoBehaviour {
 
     public bool hasMine = false;
-    private readonly float percentage_mines =  0.15f;
+    private readonly float percentage_mines = 0.15f;
 
     public Sprite[] emptyTextures;
     public Sprite mineTexture;
@@ -32,24 +32,20 @@ public class Cell : MonoBehaviour {
 
     public void OnMouseUpAsButton()
     {
-        if (IsCovered())
+        if (IsCovered() && !GridHelper.HasTheGameEnded())
         {
             if (hasMine)
             {
-                // TODO: Mostrar gameover y cerrar app
                 Debug.Log("BOOOM! Te enamoraste!");
                 GridHelper.UncoverAllTheMines();
             }
             else
             {
-                // TODO: cambiar la imagen
                 int x = (int)this.transform.position.x;
                 int y = (int)this.transform.position.y;
 
                 LoadTexture(GridHelper.CountAdjacentMines(x, y));
-                // TODO: descubrir toda el área sin minas alrededor
-                GridHelper.FloodFillUncover(x, y, new bool[GridHelper.w, GridHelper.h]);
-                // TODO: comprobar si el juego ha terminado
+                GridHelper.InitFloodFillUncover(x, y);
             }
         }
     }

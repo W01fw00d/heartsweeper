@@ -8,11 +8,6 @@ public class GridHelper : MonoBehaviour {
     public static int h = 15;
     public static Cell[,] cells = new Cell[w, h];
 
-    void Start()
-    {
-
-    }
-
     // For GameOver
     public static void UncoverAllTheMines()
     {
@@ -67,7 +62,17 @@ public class GridHelper : MonoBehaviour {
         }
     }
 
-    public static void FloodFillUncover(int x, int y, bool [,] visited)
+    public static void InitFloodFillUncover(int x, int y)
+    {
+        FloodFillUncover(x, y, new bool[GridHelper.w, GridHelper.h]);
+
+        if (HasTheGameEnded())
+        {
+            Debug.Log("Ganaste!");
+        }
+    }
+
+    private static void FloodFillUncover(int x, int y, bool [,] visited)
     {
         if (IsCellInBoard(x, y))
         {
@@ -98,15 +103,33 @@ public class GridHelper : MonoBehaviour {
 
     private static void PropagateFloodFillUncover4Directions(int x, int y, bool [,] visited)
     {
-        /*          [Ignored]               */ FloodFillUncover(x, y + 1, visited); /*          [Ignored]             */
-        FloodFillUncover(x - 1, y, visited); /*          [My Cell]                 */ FloodFillUncover(x + 1, y, visited);
-        /*          [Ignored]               */ FloodFillUncover(x, y - 1, visited); /*          [Ignored]             */
+        /*[--------------Ignored---------------][*/ FloodFillUncover(x,y+1,visited); /*][--------------Ignored----------------]*/
+        /*[*/FloodFillUncover(x-1,y,visited);/*][---------------My Cell----------------][*/ FloodFillUncover(x+1,y,visited);/*]*/
+        /*[--------------Ignored---------------][*/ FloodFillUncover(x,y-1,visited); /*][--------------Ignored----------------]*/
     }
 
     private static void PropagateFloodFillUncover8Directions(int x, int y, bool[,] visited)
     {
-        FloodFillUncover(x - 1, y + 1, visited); FloodFillUncover(x, y + 1, visited); FloodFillUncover(x + 1, y + 1, visited);
-        FloodFillUncover(x - 1, y    , visited); /*           [My Cell]           */  FloodFillUncover(x + 1, y    , visited);
-        FloodFillUncover(x - 1, y - 1, visited); FloodFillUncover(x, y - 1, visited); FloodFillUncover(x + 1, y - 1, visited);
+        FloodFillUncover(x - 1, y + 1, visited);    FloodFillUncover(x, y + 1, visited);    FloodFillUncover(x + 1, y + 1, visited);
+        FloodFillUncover(x - 1, y    , visited); /*[---------------My Cell--------------]*/ FloodFillUncover(x + 1, y    , visited);
+        FloodFillUncover(x - 1, y - 1, visited);    FloodFillUncover(x, y - 1, visited);    FloodFillUncover(x + 1, y - 1, visited);
+    }
+
+    public static bool HasTheGameEnded()
+    {
+        foreach (Cell cell in cells)
+        {
+            if (cell.IsCovered() && !cell.hasMine)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static void ReturnToMainMenu()
+    {
+        Application.Quit();
     }
 }
